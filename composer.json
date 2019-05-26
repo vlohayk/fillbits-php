@@ -1,0 +1,41 @@
+{
+  "name": "vlohayk/fillbits-php",
+  "type": "library",
+  "description": "A PHP wrapper for the Fillbits.com v1 API.",
+  "homepage": "https://www.fillbits.com",
+  "time": "2019-05-26",
+  "keywords": [
+    "FillBits",
+    "cryptocurrency",
+    "crypto",
+    "payment gateway",
+    "payment method",
+    "payment processor",
+    "merchant",
+    "paypal",
+    "bitcoin",
+    "litecoin",
+    "ethereum",
+    "php",
+    "api",
+    "btc",
+    "eth",
+    "etc",
+    "currency"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hayk",
+      "email": "vlohayk@gmail.com",
+      "homepage": "https://www.fillbits.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.0"
+  },
+  "autoload": {
+    "exclude-from-classmap": []
+  }
+}
