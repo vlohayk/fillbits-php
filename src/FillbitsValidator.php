@@ -20,6 +20,7 @@ class FillbitsValidator
      * and any mutually exclusive rules.
      */
     protected $commands_reference = [
+        'types' => [],
         'get_basic_info' => [],
         'rates' => [
             'optional' => [

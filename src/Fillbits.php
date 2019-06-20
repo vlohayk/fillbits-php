@@ -35,7 +35,7 @@ class FillbitsAPI
      * @param $password
      * @param $format
      */
-    public function __construct($public_key, $username, $password, $format)
+    public function __construct($public_key, $username, $password, $format = "json")
     {
 
         // Set the default format to json if a value was not passed
@@ -133,9 +133,10 @@ class FillbitsAPI
     public function GetRatesWithAccepted()
     {
         $fields = [
-            'accepted' => 1
+//            'accepted' => 1
         ];
-        return $this->request_handler->execute('rates', $fields);
+        $method = "GET";
+        return $this->request_handler->execute('types', $method, $fields);
     }
 
     /**

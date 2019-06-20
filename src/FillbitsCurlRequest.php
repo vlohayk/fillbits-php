@@ -35,10 +35,10 @@ class FillbitsCurlRequest
      *
      * @throws Exception If an invalid format is passed.
      */
-    public function execute($command, array $fields = [])
+    public function execute($command, $method, array $fields = [])
     {
         // Define the API url
-        $api_url = 'https://gateway.chyps.com/api/v2/crypto/';
+        $api_url = 'https://imsba.com/api/v2/crypto/';
 
         // Validate the passed fields
         $validator = new FillbitsValidator($command, $fields);
@@ -54,32 +54,34 @@ class FillbitsCurlRequest
             $fields['cmd'] = $command;
 
             // Throw an error if the format is not equal to json or xml
-            if ($fields['format'] != 'json' && $fields['format'] != 'xml') {
-                return ['error' => 'Invalid response format passed. Please use "json" or "xml" as a format value'];
+            if ($fields['format'] != 'json') {
+                return ['error' => 'Invalid response format passed. Please use "json" as a format value'];
             }
 
             // Generate query string from fields
             $post_fields = http_build_query($fields, '', '&');
 
             // Generate the HMAC hash from the query string and private key
-            $hmac = hash_hmac('sha512', $post_fields, $this->private_key);
+//            $hmac = hash_hmac('sha512', $post_fields, $this->private_key);
 
             // Check the cURL handle has not already been initiated
             if ($this->curl_handle === null) {
-
+$api_url .= $command . '?key=' . $this->public_key;
                 // Initiate the cURL handle and set initial options
                 $this->curl_handle = curl_init($api_url);
                 curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, TRUE);
                 curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
                 curl_setopt($this->curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
+                if($method == 'POST') {
+                    curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
+                    // Set HTTP POST fields for cURL
+                    curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
+                }
             }
 
             // Set HMAC header for cURL
-            curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, array('HMAC:' . $hmac));
+            curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, array());
 
-            // Set HTTP POST fields for cURL
-            curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
 
             // Execute the cURL session
             $response = curl_exec($this->curl_handle);
