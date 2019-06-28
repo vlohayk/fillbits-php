@@ -357,22 +357,17 @@ class FillbitsAPI
      *
      * @throws Exception
      */
-    public function CreateComplexTransaction($amount, $currency1, $currency2, $buyer_email, $address, $buyer_name, $item_name, $item_number, $invoice, $custom, $ipn_url)
+    public function CreateComplexTransaction($amount, $paymentCurrency, $deposit_address, $transaction_id, $ipn_url, $expiration)
     {
         $fields = [
             'amount' => $amount,
-            'currency1' => $currency1,
-            'currency2' => $currency2,
-            'buyer_email' => $buyer_email,
-            'address' => $address,
-            'buyer_name' => $buyer_name,
-            'item_name' => $item_name,
-            'item_number' => $item_number,
-            'invoice' => $invoice,
-            'custom' => $custom,
-            'ipn_url' => $ipn_url
+            'type_id' => $paymentCurrency,
+            'transaction_id' => $transaction_id,
+            'deposit_address' => $deposit_address,
+            'expiration' => $expiration,
+            'callback' => $ipn_url
         ];
-        return $this->request_handler->execute('create_transaction', $fields);
+        return $this->request_handler->execute('order', 'post', $fields);
     }
 
     /**
