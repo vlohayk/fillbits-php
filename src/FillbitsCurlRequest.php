@@ -40,8 +40,11 @@ class FillbitsCurlRequest
         // Define the API url
         $api_url = 'https://imsba.com/api/v2/crypto/';
         // Validate the passed fields
-        $validator = new FillbitsValidator($command, $fields);
-        $validate_fields = $validator->validate();
+        $validate_fields = '';
+        if(strtoupper($method) == 'POST') {
+            $validator = new FillbitsValidator($command, $fields);
+            $validate_fields = $validator->validate();
+        }
         if (strpos($validate_fields, 'Error') !== FALSE) {
             echo $validate_fields;
             exit();
@@ -59,19 +62,21 @@ class FillbitsCurlRequest
 //print_r($fields);exit;
             // Generate query string from fields
             $post_fields = http_build_query($fields, '', '&');
-
             // Generate the HMAC hash from the query string and private key
 //            $hmac = hash_hmac('sha512', $post_fields, $this->private_key);
 
             // Check the cURL handle has not already been initiated
             if ($this->curl_handle === null) {
                 $api_url .= $command . '?key=' . $this->public_key;
-
+                if(strtoupper($method) == 'GET') {
+                    $api_url .= '&'.$post_fields;
+                }
                 // Initiate the cURL handle and set initial options
                 $this->curl_handle = curl_init($api_url);
                 curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, TRUE);
                 curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
                 curl_setopt($this->curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
+
                 if(strtoupper($method) == 'POST') {
                     curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
                     // Set HTTP POST fields for cURL

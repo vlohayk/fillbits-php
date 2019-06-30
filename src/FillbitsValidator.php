@@ -85,6 +85,15 @@ class FillbitsPaymentService
         return $response;
     }
 
+    public function checkPaymentStatus($transaction_id)
+    {
+        $this->response = $this->api->GetPaymentInfo($transaction_id);
+        Log::info($this->response);
+        if (!$this->requestIsSuccessful())
+            throw new \Exception($this->response['error']);
+        return $this->response;
+    }
+
     public function initializeWithdrawal($amount, $currency, $paymentCurrency, $address, $note)
     {
         $this->response = $this->api->CreateWithdrawal([

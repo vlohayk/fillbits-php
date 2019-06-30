@@ -84,6 +84,11 @@ class FillbitsAPI
         return $this->request_handler->execute('get_basic_info');
     }
 
+    public function GetPaymentInfo($transaction_id)
+    {
+        return $this->request_handler->execute('order', 'get', ['txid'=>$transaction_id]);
+    }
+
     /**
      * function GetRates
      * Basic call to get rates, with full currency names and no reference to if the coin is enabled.
