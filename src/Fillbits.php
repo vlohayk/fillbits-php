@@ -109,9 +109,9 @@ class FillbitsAPI
      *
      * @throws Exception
      */
-    public function GetRates()
+    public function GetRates($currency)
     {
-        return $this->request_handler->execute('rates');
+        return $this->request_handler->execute('rates', 'get', ['type_id' => $currency]);
     }
 
     /**
@@ -373,6 +373,16 @@ class FillbitsAPI
             'callback' => $ipn_url
         ];
         return $this->request_handler->execute('order', 'post', $fields);
+    }
+
+    public function Convert($amount, $paymentCurrency)
+    {
+        $fields = [
+            'usd' => $amount,
+            'type_id' => $paymentCurrency
+        ];
+
+        return $this->request_handler->execute('convert', 'get', $fields);
     }
 
     /**

@@ -66,23 +66,23 @@ class FillbitsCurlRequest
 //            $hmac = hash_hmac('sha512', $post_fields, $this->private_key);
 
             // Check the cURL handle has not already been initiated
-            if ($this->curl_handle === null) {
-                $api_url .= $command . '?key=' . $this->public_key;
-                if(strtoupper($method) == 'GET') {
-                    $api_url .= '&'.$post_fields;
-                }
-                // Initiate the cURL handle and set initial options
-                $this->curl_handle = curl_init($api_url);
-                curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, TRUE);
-                curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
-                curl_setopt($this->curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
-
-                if(strtoupper($method) == 'POST') {
-                    curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
-                    // Set HTTP POST fields for cURL
-                    curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
-                }
+//            if ($this->curl_handle === null) {
+            $api_url .= $command . '?key=' . $this->public_key;
+            if(strtoupper($method) == 'GET') {
+                $api_url .= '&'.$post_fields;
             }
+            // Initiate the cURL handle and set initial options
+            $this->curl_handle = curl_init($api_url);
+            curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, TRUE);
+            curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($this->curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
+
+            if(strtoupper($method) == 'POST') {
+                curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
+                // Set HTTP POST fields for cURL
+                curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
+            }
+//            }
 
             // Set HMAC header for cURL
             curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, array());
