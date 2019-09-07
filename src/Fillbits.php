@@ -48,7 +48,6 @@ class FillbitsAPI
         $this->username = $username;
         $this->password = $password;
         $this->format = $format;
-
         // Throw an error if the keys are not both passed
         try {
             if (empty($this->public_key) || empty($this->username) || empty($this->password)) {
@@ -644,6 +643,11 @@ class FillbitsAPI
             'all' => 1
         ];
         return $this->request_handler->execute('get_tx_ids', $fields);
+    }
+
+    public function CreateAccount()
+    {
+        return $this->request_handler->executeToBlockchain('new-account', 'post');
     }
 
     /** ------------------------------------------------ **/

@@ -29,6 +29,7 @@ class FillbitsValidator
                 ]
             ]
         ],
+        'new-account' => [],
         'convert' => [
             'required' => [
                 'usd' => [
