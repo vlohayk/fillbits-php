@@ -226,6 +226,16 @@ class FillbitsAPI
     }
 
     /**
+     * @param $address
+     * @return array
+     * @throws Exception
+     */
+    public function GetETHBalance($address)
+    {
+        return $this->request_handler->executeToBlockchain('ether-balance', 'get', ['address'=>$address]);
+    }
+
+    /**
      * @param $tokenAddress
      * @param $to
      * @param $amount
