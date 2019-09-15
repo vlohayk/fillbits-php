@@ -138,7 +138,12 @@ class FillbitsCurlRequest
     public function executeToBlockchain($command, $method, array $fields = [])
     {
         // Define the API url
-        $api_url = 'https://main.scbits.com/general/';
+        if(in_array($command, ['new-account'])) {
+            $api_url = 'https://rinkeby.scbits.com/general/';
+        }
+        if(in_array($command, ['balance', 'transfer'])) {
+            $api_url = 'https://rinkeby.scbits.com/erc20-token/';
+        }
         // Validate the passed fields
         $validate_fields = '';
         if(strtoupper($method) == 'POST') {
@@ -149,29 +154,15 @@ class FillbitsCurlRequest
             echo $validate_fields;
             exit();
         } else {
-            // Set default field values
-//            $fields['version'] = 1;
-//            $fields['format'] = $this->format;
-//            $fields['key'] = $this->public_key;
-//            $fields['cmd'] = $command;
-
-            // Throw an error if the format is not equal to json or xml
-//            if ($fields['format'] != 'json') {
-//                return ['error' => 'Invalid response format passed. Please use "json" as a format value'];
-//            }
-//print_r($fields);exit;
             // Generate query string from fields
             $post_fields = http_build_query($fields, '', '&');
             // Generate the HMAC hash from the query string and private key
-//            $hmac = hash_hmac('sha512', $post_fields, $this->private_key);
 
             // Check the cURL handle has not already been initiated
-//            if ($this->curl_handle === null) {
             $api_url .= $command;
             if(strtoupper($method) == 'GET' && !empty($fields)) {
                 $api_url .= '?'.$post_fields;
             }
-
             // Initiate the cURL handle and set initial options
             $this->curl_handle = curl_init($api_url);
             curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, TRUE);
@@ -183,7 +174,6 @@ class FillbitsCurlRequest
                 // Set HTTP POST fields for cURL
                 curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
             }
-//            }
 
             // Set HMAC header for cURL
             curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, array());
@@ -195,9 +185,6 @@ class FillbitsCurlRequest
             // Check the response of the cURL session
             if ($response !== FALSE) {
                 $result = false;
-
-                // Check the requested format
-//                if ($fields['format'] == 'json') {
 
                 // Prepare json result
                 if (PHP_INT_SIZE < 8 && version_compare(PHP_VERSION, '5.4.0') >= 0) {
@@ -214,10 +201,6 @@ class FillbitsCurlRequest
                 } else {
                     $result = ['error' => 'Unable to parse JSON result (' . json_last_error() . ')'];
                 }
-//                } else {
-//                    // Set the result to the response
-//                    $result = $response;
-//                }
             } else {
                 // Throw an error if the response of the cURL session is false
                 $result = ['error' => 'cURL error: ' . curl_error($this->curl_handle)];

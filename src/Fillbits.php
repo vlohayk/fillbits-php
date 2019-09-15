@@ -58,7 +58,7 @@ class FillbitsAPI
         }
 
         // Initiate a cURL request object
-        $this->request_handler = new FillbitsCurlRequest($this->public_key, $this->username,  $this->password, $format);
+        $this->request_handler = new FillbitsCurlRequest($this->public_key, $this->username, $this->password, $format);
     }
 
     /** ------------------------------------------------ **/
@@ -85,7 +85,7 @@ class FillbitsAPI
 
     public function GetPaymentInfo($transaction_id)
     {
-        return $this->request_handler->execute('order', 'get', ['txid'=>$transaction_id]);
+        return $this->request_handler->execute('order', 'get', ['txid' => $transaction_id]);
     }
 
     /**
@@ -212,6 +212,39 @@ class FillbitsAPI
     public function GetCoinBalances()
     {
         return $this->request_handler->execute('balances');
+    }
+
+    /**
+     * @param $tokenAddress
+     * @param $address
+     * @return array
+     * @throws Exception
+     */
+    public function GetCoinBalance($tokenAddress, $address)
+    {
+        return $this->request_handler->executeToBlockchain('balance', 'get', ['tokenAddress' => $tokenAddress, 'address' => $address]);
+    }
+
+    /**
+     * @param $tokenAddress
+     * @param $to
+     * @param $amount
+     * @param $senderPrivateKey
+     * @param string $gas
+     * @param string $gasPrice
+     * @return array
+     * @throws Exception
+     */
+    public function TransferCoins($tokenAddress, $to, $amount, $senderPrivateKey, $gas = '2000000', $gasPrice = '6000000000')
+    {
+        return $this->request_handler->executeToBlockchain('transfer', 'post', [
+            'tokenAddress' => $tokenAddress,
+            'to' => $to,
+            'amount' => $amount,
+            'senderPrivateKey' => $senderPrivateKey,
+            'gas' => $gas,
+            'gasPrice' => $gasPrice,
+        ]);
     }
 
     /**
