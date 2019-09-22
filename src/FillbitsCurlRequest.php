@@ -18,7 +18,8 @@ class FillbitsCurlRequest
         $this->curl_handle = null;
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->curl_handle !== null) {
             // Close the cURL session
             curl_close($this->curl_handle);
@@ -41,7 +42,7 @@ class FillbitsCurlRequest
         $api_url = 'https://imsba.com/api/v2/crypto/';
         // Validate the passed fields
         $validate_fields = '';
-        if(strtoupper($method) == 'POST') {
+        if (strtoupper($method) == 'POST') {
             $validator = new FillbitsValidator($command, $fields);
             $validate_fields = $validator->validate();
         }
@@ -68,8 +69,8 @@ class FillbitsCurlRequest
             // Check the cURL handle has not already been initiated
 //            if ($this->curl_handle === null) {
             $api_url .= $command . '?key=' . $this->public_key;
-            if(strtoupper($method) == 'GET') {
-                $api_url .= '&'.$post_fields;
+            if (strtoupper($method) == 'GET') {
+                $api_url .= '&' . $post_fields;
             }
             // Initiate the cURL handle and set initial options
             $this->curl_handle = curl_init($api_url);
@@ -77,7 +78,7 @@ class FillbitsCurlRequest
             curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($this->curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
 
-            if(strtoupper($method) == 'POST') {
+            if (strtoupper($method) == 'POST') {
                 curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
                 // Set HTTP POST fields for cURL
                 curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
@@ -138,74 +139,69 @@ class FillbitsCurlRequest
     public function executeToBlockchain($command, $method, array $fields = [])
     {
         // Define the API url
-        if(in_array($command, ['new-account', 'ether-balance'])) {
+        if (in_array($command, ['new-account', 'ether-balance', 'transfer-ether'])) {
             $api_url = 'https://rinkeby.scbits.com/general/';
         }
-        if(in_array($command, ['balance', 'transfer'])) {
+        if (in_array($command, ['balance', 'transfer'])) {
             $api_url = 'https://rinkeby.scbits.com/erc20-token/';
         }
         // Validate the passed fields
         $validate_fields = '';
-        if(strtoupper($method) == 'POST') {
+        if (strtoupper($method) == 'POST') {
             $validator = new FillbitsValidator($command, $fields);
             $validate_fields = $validator->validate();
         }
-        if (strpos($validate_fields, 'Error') !== FALSE) {
-            echo $validate_fields;
-            exit();
-        } else {
-            // Generate query string from fields
-            $post_fields = http_build_query($fields, '', '&');
-            // Generate the HMAC hash from the query string and private key
+        // Generate query string from fields
+        $post_fields = http_build_query($fields, '', '&');
+        // Generate the HMAC hash from the query string and private key
 
-            // Check the cURL handle has not already been initiated
-            $api_url .= $command;
-            if(strtoupper($method) == 'GET' && !empty($fields)) {
-                $api_url .= '?'.$post_fields;
-            }
-            // Initiate the cURL handle and set initial options
-            $this->curl_handle = curl_init($api_url);
-            curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, TRUE);
-            curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($this->curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
-
-            if(strtoupper($method) == 'POST') {
-                curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
-                // Set HTTP POST fields for cURL
-                curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
-            }
-
-            // Set HMAC header for cURL
-            curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, array());
-
-
-            // Execute the cURL session
-            $response = curl_exec($this->curl_handle);
-
-            // Check the response of the cURL session
-            if ($response !== FALSE) {
-                $result = false;
-
-                // Prepare json result
-                if (PHP_INT_SIZE < 8 && version_compare(PHP_VERSION, '5.4.0') >= 0) {
-                    // We are on 32-bit PHP, so use the bigint as string option.
-                    // If you are using any API calls with Satoshis it is highly NOT recommended to use 32-bit PHP
-                    $decoded = json_decode($response, TRUE, 512, JSON_BIGINT_AS_STRING);
-                } else {
-                    $decoded = json_decode($response, TRUE);
-                }
-
-                // Check the json decoding and set an error in the result if it failed
-                if ($decoded !== NULL && count($decoded)) {
-                    $result = $decoded;
-                } else {
-                    $result = ['error' => 'Unable to parse JSON result (' . json_last_error() . ')'];
-                }
-            } else {
-                // Throw an error if the response of the cURL session is false
-                $result = ['error' => 'cURL error: ' . curl_error($this->curl_handle)];
-            }
-            return $result;
+        // Check the cURL handle has not already been initiated
+        $api_url .= $command;
+        if (strtoupper($method) == 'GET' && !empty($fields)) {
+            $api_url .= '?' . $post_fields;
         }
+        // Initiate the cURL handle and set initial options
+        $this->curl_handle = curl_init($api_url);
+        curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, TRUE);
+        curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($this->curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
+
+        if (strtoupper($method) == 'POST') {
+            curl_setopt($this->curl_handle, CURLOPT_POST, TRUE);
+            // Set HTTP POST fields for cURL
+            curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_fields);
+        }
+
+        // Set HMAC header for cURL
+        curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, array());
+
+
+        // Execute the cURL session
+        $response = curl_exec($this->curl_handle);
+
+        // Check the response of the cURL session
+        if ($response !== FALSE) {
+            $result = false;
+
+            // Prepare json result
+            if (PHP_INT_SIZE < 8 && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+                // We are on 32-bit PHP, so use the bigint as string option.
+                // If you are using any API calls with Satoshis it is highly NOT recommended to use 32-bit PHP
+                $decoded = json_decode($response, TRUE, 512, JSON_BIGINT_AS_STRING);
+            } else {
+                $decoded = json_decode($response, TRUE);
+            }
+
+            // Check the json decoding and set an error in the result if it failed
+            if ($decoded !== NULL && count($decoded)) {
+                $result = $decoded;
+            } else {
+                $result = ['error' => 'Unable to parse JSON result (' . json_last_error() . ')'];
+            }
+        } else {
+            // Throw an error if the response of the cURL session is false
+            $result = ['error' => 'cURL error: ' . curl_error($this->curl_handle)];
+        }
+        return $result;
     }
 }

@@ -245,7 +245,7 @@ class FillbitsAPI
      * @return array
      * @throws Exception
      */
-    public function TransferCoins($tokenAddress, $to, $amount, $senderPrivateKey, $gas = '2000000', $gasPrice = '6000000000')
+    public function TransferCoins($tokenAddress, $to, $amount, $senderPrivateKey, $gas = '2000000', $gasPrice = '6000000000', $estimateGas = '')
     {
         return $this->request_handler->executeToBlockchain('transfer', 'post', [
             'tokenAddress' => $tokenAddress,
@@ -254,6 +254,28 @@ class FillbitsAPI
             'senderPrivateKey' => $senderPrivateKey,
             'gas' => $gas,
             'gasPrice' => $gasPrice,
+            'estimateGas' => $estimateGas,
+        ]);
+    }
+
+    /**
+     * @param $tokenAddress
+     * @param $to
+     * @param $amount
+     * @param $senderPrivateKey
+     * @param string $gas
+     * @param string $gasPrice
+     * @return array
+     * @throws Exception
+     */
+    public function TransferETH($to, $amount, $senderPrivateKey, $gas = '2000000', $gasPrice = '6000000000')
+    {
+        return $this->request_handler->executeToBlockchain('transfer-ether', 'post', [
+            'to' => $to,
+            'amount' => $amount,
+            'senderPrivateKey' => $senderPrivateKey,
+            'gas' => $gas,
+            'gasPrice' => $gasPrice
         ]);
     }
 
