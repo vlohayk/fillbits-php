@@ -268,7 +268,7 @@ class FillbitsAPI
      * @return array
      * @throws Exception
      */
-    public function TransferETH($to, $amount, $senderPrivateKey, $gas = '2000000', $gasPrice = '6000000000')
+    public function TransferETH($to, $amount, $senderPrivateKey, $gas = '2000000', $gasPrice = '1000000000')
     {
         return $this->request_handler->executeToBlockchain('transfer-ether', 'post', [
             'to' => $to,
@@ -1098,5 +1098,11 @@ class FillbitsAPI
         ];
 
         return $this->request_handler->execute('claim_pbn_tag', $fields);
+    }
+
+    public function checkTransaction($txhash){
+        return $this->request_handler->executeToBlockchain('transaction-receipt', 'get', [
+            'txHash' => $txhash
+        ]);
     }
 }

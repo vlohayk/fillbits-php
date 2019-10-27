@@ -139,7 +139,7 @@ class FillbitsCurlRequest
     public function executeToBlockchain($command, $method, array $fields = [])
     {
         // Define the API url
-        if (in_array($command, ['new-account', 'ether-balance', 'transfer-ether'])) {
+        if (in_array($command, ['new-account', 'ether-balance', 'transfer-ether', 'transaction-receipt'])) {
             $api_url = 'https://rinkeby.scbits.com/general/';
         }
         if (in_array($command, ['balance', 'transfer'])) {
