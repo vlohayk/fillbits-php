@@ -17,6 +17,8 @@ require('FillbitsCurlRequest.php');
  * The commands for converting coins and getting coin conversion information rely on mainnet transactions of a
  * non-testing currency and are excluded from the capabilities of LTCT in the Fillbits API.
  *
+ * $PayByName tag commands also rely on having available or claimed tags on the production CoinPayments.com website to
+ * manipulate.
  */
 class FillbitsAPI
 {
@@ -749,6 +751,7 @@ class FillbitsAPI
      *
      * @param int $amount The amount of the transfer in the given $currency.
      * @param string $currency The currency for the transfer.
+     * @param string $paybyname The $PayByName tag that will recieve the transfer.
      * @param int $autoconfirm Set to 1 to withdraw without an email confirmation.
      *
      * @return array|object
@@ -773,7 +776,7 @@ class FillbitsAPI
     /**
      * function CreateWithdrawal
      * Withdrawals send coins to a specified address or $PayByName tag over the coin networks and optionally send
-     * an IPN when complete. If you are sending to another FillBits user and you have their $PayByName tag or
+     * an IPN when complete. If you are sending to another CoinPayments user and you have their $PayByName tag or
      * merchant ID you can also use 'create_transfer' for faster sends that don't go over the coin networks when possible.
      *
      * @param array $fields Parameters to pass with the withdrawal command. See below.
@@ -848,7 +851,7 @@ class FillbitsAPI
      * @param int $amount The amount of the $from currency to convert.
      * @param string $from The ticker of the currency to convert from.
      * @param string $to The ticker of the currency to conver to.
-     * @param string $address The address to send funds to. If blank or not included the coins will go to your FillBits Wallet.
+     * @param string $address The address to send funds to. If blank or not included the coins will go to your CoinPayments Wallet.
      * @param string $dest_tag The destination tag to use for the withdrawal (for Ripple.) If 'address' is not included this has no effect.
      *
      * @return array|object Contains only one value, the ID of the conversion (string).
