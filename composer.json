@@ -26,14 +26,14 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Hayk",
+      "name": "Hayk Hakobyan",
       "email": "vlohayk@gmail.com",
       "homepage": "https://www.fillbits.com",
       "role": "Developer"
     }
   ],
   "require": {
-    "php": ">=7.0"
+    "php": ">=7.2"
   },
   "autoload": {
     "exclude-from-classmap": []
